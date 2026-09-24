@@ -13,7 +13,7 @@ import pool from "../config/db.js";
 export const getCalendarClient = (tokens, userId = null) => {
   const redirectUri =
     process.env.GOOGLE_REDIRECT_URI ||
-    "http://localhost:5000/auth/google/callback";
+    "http://localhost:5000/api/auth/google/callback";
 
   if (!process.env.GOOGLE_CLIENT_ID) {
     throw new Error("GOOGLE_CLIENT_ID is missing in .env");
