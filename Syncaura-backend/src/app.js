@@ -27,7 +27,6 @@ import noteRoutes from "./routes/note.routes.js";
 import attachmentRoutes from "./routes/attachment.routes.js";
 import meetingRoutes from "./routes/meeting.routes.js";
 import calendarTestRoute from "./routes/calendarTest.route.js";
-import googleAuthRoutes from "./routes/googleAuth.route.js";
 import githubRoutes from "./routes/github.routes.js";
 import { initSlackBot } from "./services/slackBot.js";
 import chatbotRoutes from "./routes/chatbotRoutes.js";
@@ -92,7 +91,6 @@ app.use('/api/attachments', attachmentRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api/meetings', meetingRoutes);
 app.use('/api', calendarTestRoute);
-app.use('/auth', googleAuthRoutes);
 app.use('/api/github', githubRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 
