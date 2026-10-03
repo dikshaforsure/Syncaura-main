@@ -17,6 +17,7 @@ import {
 } from "../redux/features/meetingThunks";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import api from "../config/axios";
 
 export default function Meetings() {
   const { t } = useTranslation();
@@ -95,18 +96,10 @@ export default function Meetings() {
 
   // Sync Google Calendar
   const handleSyncCalendar = async () => {
-    const token =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("token") ||
-      reduxAuthToken;
-
-    if (!token) {
+    if (!reduxAuthToken && !localStorage.getItem("accessToken") && !localStorage.getItem("token")) {
       toast.error("Please log in first.");
       return;
     }
-
-    localStorage.setItem("accessToken", token);
-    localStorage.setItem("token", token);
 
     try {
       const resultAction = await dispatch(syncCalendarEvents());
@@ -119,17 +112,33 @@ export default function Meetings() {
         return;
       }
 
-      console.log("Calendar sync failed:", resultAction.payload);
+      const connectResponse = await api.get("/auth/google/calendar");
 
-      window.location.href = `/auth/google?token=${encodeURIComponent(
-        token
-      )}`;
+      if (connectResponse.data?.authUrl) {
+        window.location.assign(connectResponse.data.authUrl);
+        return;
+      }
+
+      toast.error("Failed to connect Google Calendar.");
     } catch (err) {
       console.error("Calendar sync error:", err);
 
-      window.location.href = `/auth/google?token=${encodeURIComponent(
-        token
-      )}`;
+      try {
+        const connectResponse = await api.get("/auth/google/calendar");
+
+        if (connectResponse.data?.authUrl) {
+          window.location.assign(connectResponse.data.authUrl);
+          return;
+        }
+
+        toast.error("Failed to connect Google Calendar.");
+      } catch (connectError) {
+        console.error("Google Calendar authorization error:", connectError);
+        toast.error(
+          connectError.response?.data?.message ||
+            "Failed to connect Google Calendar."
+        );
+      }
     }
   };
 

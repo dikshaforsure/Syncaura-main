@@ -17,6 +17,7 @@ import {
 import { activateAccount } from '../controllers/accountController.js';
 import {
   initiateGoogleLogin,
+  initiateGoogleCalendarLogin,
   handleGoogleCallback,
   handleGithubCallback
 } from '../controllers/oauthController.js';
@@ -47,6 +48,7 @@ router.post('/refresh', refresh);
 // Social Login
 router.get('/google', initiateGoogleLogin);
 router.get('/google/callback', handleGoogleCallback);
+router.get('/google/calendar', auth, initiateGoogleCalendarLogin);
 router.post('/github/callback', handleGithubCallback);
 
 router.get('/me', auth, getProfile);
